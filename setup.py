@@ -28,12 +28,16 @@ setup(
     packages=[
         "ucrspawner",
     ],
+    python_requires='>=3.3',
     install_requires=requires,
     setup_requires=[
         'pytest-runner>=2.0,<3dev',
     ],
     tests_require=tests_require,
     classifiers=[
+        'Development Status :: 3 - Alpha',
+        'License :: OSI Approved :: MIT License',
+        'Programming Language :: Python :: 3',
         'Framework :: Jupyter',
     ],
 )
