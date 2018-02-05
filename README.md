@@ -8,6 +8,8 @@
 
 # UCRSpawner
 
+[![Build Status][build-image]][build-link]
+
 The JupyterHub spawner which utilizes Universal Containerizer Runtime (UCR) in Marathon so that you can use GPU.
 
 The original idea of the Marathon integration is taken from https://github.com/vigsterkr/marathonspawner which uses Docker containerizer in Marathon.
@@ -63,3 +65,6 @@ docker-compose --project-name=ucrspawner up
 
 Copyright (c) 2018 Daisuke Taniwaki. See [LICENSE](LICENSE) for details.
 
+
+[build-image]: https://travis-ci.org/dtaniwaki/ucrspawner.svg
+[build-link]:  https://travis-ci.org/dtaniwaki/ucrspawner
