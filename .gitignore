@@ -106,5 +106,9 @@ tmp/
 # Pytest
 report/
 
+# JupyterHub
+*.sqlite
+jupyterhub_cookie_secret
+
 # Misc
 .pypirc
