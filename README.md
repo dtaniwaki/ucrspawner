@@ -8,6 +8,7 @@
 
 # UCRSpawner
 
+[![PyPI][pypi-image]][pypi-link]
 [![Build Status][build-image]][build-link]
 
 The JupyterHub spawner which utilizes Universal Containerizer Runtime (UCR) in Marathon so that you can use GPU.
@@ -66,5 +67,7 @@ docker-compose --project-name=ucrspawner up
 Copyright (c) 2018 Daisuke Taniwaki. See [LICENSE](LICENSE) for details.
 
 
+[pypi-image]:  https://img.shields.io/pypi/v/ucrspawner.svg
+[pypi-link]:   https://pypi.python.org/pypi/ucrspawner
 [build-image]: https://travis-ci.org/dtaniwaki/ucrspawner.svg
 [build-link]:  https://travis-ci.org/dtaniwaki/ucrspawner
