@@ -11,7 +11,7 @@
 [![PyPI][pypi-image]][pypi-link]
 [![Build Status][build-image]][build-link]
 
-The JupyterHub spawner which utilizes Universal Containerizer Runtime (UCR) in Marathon so that you can use GPU.
+The [JupyterHub](http://jupyterhub.readthedocs.io/en/latest/) spawner which utilizes [Universal Containerizer Runtime (UCR)](http://mesos.apache.org/documentation/latest/container-image/) in [Marathon](https://docs.mesosphere.com/1.9/deploying-services/containerizers/ucr/) so that you can use GPU.
 
 The original idea of the Marathon integration is taken from https://github.com/vigsterkr/marathonspawner which uses Docker containerizer in Marathon.
 
