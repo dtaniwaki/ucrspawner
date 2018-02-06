@@ -1,4 +1,5 @@
 import os
+
 from setuptools import setup
 
 requires = [
@@ -42,7 +43,6 @@ setup(
             'autoflake>=1.1,<2dev',
             'autopep8>=1.3,<2dev',
             'flake8-blind-except>=0.1.1,<1dev',
-            'flake8-docstrings>=1.3.0,<2dev',
             'flake8-import-order>=0.16,<1dev',
             'flake8-html>=0.4.0,<1dev',
         ],
