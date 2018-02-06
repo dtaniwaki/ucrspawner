@@ -110,5 +110,8 @@ report/
 *.sqlite
 jupyterhub_cookie_secret
 
+# Flake8
+htmlflake8/
+
 # Misc
 .pypirc
