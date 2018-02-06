@@ -3,7 +3,7 @@ from setuptools import setup
 
 requires = [
     'jupyterhub>=0.7',
-    'marathon',
+    'marathon>=0.9,<1dev',
 ]
 
 tests_require = [
