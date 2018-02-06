@@ -33,6 +33,7 @@ setup(
     setup_requires=[
         'pytest-runner>=2.0,<3dev',
         'tox>=2.7,<3dev',
+        'bumpversion>=0.5.3,<1dev',
     ],
     tests_require=tests_require,
     extras_require={
