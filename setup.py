@@ -2,7 +2,7 @@ import os
 from setuptools import setup
 
 requires = [
-    'jupyterhub>=0.7',
+    'jupyterhub>=0.7,<1dev',
     'marathon>=0.9,<1dev',
 ]
 
