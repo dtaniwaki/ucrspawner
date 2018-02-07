@@ -9,8 +9,10 @@
 # UCRSpawner
 
 [![PyPI][pypi-image]][pypi-link]
+[![GitHub license][license-image]][license-link]
 [![PyVersions][pyversions-image]][pypi-link]
 [![Build Status][build-image]][build-link]
+
 
 The [JupyterHub](http://jupyterhub.readthedocs.io/en/latest/) spawner which utilizes [Universal Containerizer Runtime (UCR)](http://mesos.apache.org/documentation/latest/container-image/) in [Marathon](https://docs.mesosphere.com/1.9/deploying-services/containerizers/ucr/) so that you can use GPU.
 
@@ -76,6 +78,8 @@ Copyright (c) 2018 Daisuke Taniwaki. See [LICENSE](LICENSE) for details.
 
 [pypi-image]:  https://img.shields.io/pypi/v/ucrspawner.svg
 [pypi-link]:   https://pypi.python.org/pypi/ucrspawner
+[license-image]: https://img.shields.io/github/license/dtaniwaki/ucrspawner.svg
+[license-link]:  https://github.com/dtaniwaki/ucrspawner
 [pyversions-image]: https://img.shields.io/pypi/pyversions/ucrspawner.svg
 [build-image]: https://travis-ci.org/dtaniwaki/ucrspawner.svg
 [build-link]:  https://travis-ci.org/dtaniwaki/ucrspawner
