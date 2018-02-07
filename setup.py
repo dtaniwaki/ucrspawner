@@ -38,6 +38,7 @@ setup(
     ],
     tests_require=tests_require,
     extras_require={
+        'test': tests_require,
         'flake8': [
             'flake8>=3.5.0,<4dev',
             'autoflake>=1.1,<2dev',
