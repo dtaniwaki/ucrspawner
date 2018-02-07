@@ -1,25 +1,30 @@
-import time
 import socket
-from concurrent.futures import ThreadPoolExecutor
-from urllib.parse import urlparse, urlunparse
 import warnings
+from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta
-
 from textwrap import dedent
-from tornado import gen
-from tornado.concurrent import run_on_executor
-from traitlets import Any, Integer, Float, List, Unicode, Bool, default, observe
+from urllib.parse import urlparse, urlunparse
+
+import jupyterhub
+from jupyterhub.spawner import Spawner
 
 from marathon import MarathonClient
-from marathon.models.app import MarathonApp, MarathonHealthCheck, PortDefinition
-from marathon.models.container import MarathonContainer, MarathonContainerVolume, MarathonDockerContainer
-from marathon.models.constraint import MarathonConstraint
 from marathon.exceptions import NotFoundError
-from jupyterhub.spawner import Spawner
+from marathon.models.app import MarathonApp, MarathonHealthCheck, PortDefinition
+from marathon.models.constraint import MarathonConstraint
+from marathon.models.container import (
+    MarathonContainer,
+    MarathonContainerVolume,
+    MarathonDockerContainer,
+)
+
+from tornado import gen
+from tornado.concurrent import run_on_executor
+
+from traitlets import Any, Float, Integer, List, Unicode, default, observe
 
 from .volumenaming import default_format_volume_name
 
-import jupyterhub
 _jupyterhub_xy = '%i.%i' % (jupyterhub.version_info[:2])
 
 
@@ -33,7 +38,8 @@ class UCRSpawnerException(Exception):
 
 class UCRSpawner(Spawner):
 
-    app_image = Unicode("jupyterhub/singleuser:%s" % _jupyterhub_xy, config=True)
+    app_image = Unicode("jupyterhub/singleuser:%s" %
+                        _jupyterhub_xy, config=True)
 
     app_prefix = Unicode(
         "jupyter",
@@ -92,14 +98,14 @@ class UCRSpawner(Spawner):
     mesos_user = Unicode(None, config=True, allow_none=True)
 
     autotimeout = Integer(None,
-        help="Seconds to automatically timeout unused notebook servers",
-        config=True,
-        allow_none=True)
+                          help="Seconds to automatically timeout unused notebook servers",
+                          config=True,
+                          allow_none=True)
 
     hub_ip_connect = Unicode(
         "",
         help="Public IP address of the hub"
-        ).tag(config=True)
+    ).tag(config=True)
 
     @observe('hub_ip_connect')
     def _ip_connect_changed(self, change):
@@ -113,7 +119,7 @@ class UCRSpawner(Spawner):
     hub_port_connect = Integer(
         -1,
         help="Public PORT of the hub"
-        ).tag(config=True)
+    ).tag(config=True)
 
     @observe('hub_port_connect')
     def _port_connect_changed(self, change):
@@ -145,6 +151,7 @@ class UCRSpawner(Spawner):
         return '0.0.0.0'
 
     _executor = None
+
     @property
     def executor(self):
         cls = self.__class__
@@ -179,17 +186,19 @@ class UCRSpawner(Spawner):
             interval_seconds=30,
             timeout_seconds=20,
             max_consecutive_failures=0
-            ))
+        ))
         return health_checks
 
     def get_volumes(self):
         volumes = []
         for v in self.volumes:
             mv = MarathonContainerVolume.from_json(v)
-            mv.container_path = self.format_volume_name(mv.container_path, self)
+            mv.container_path = self.format_volume_name(
+                mv.container_path, self)
             mv.host_path = self.format_volume_name(mv.host_path, self)
             if mv.external and 'name' in mv.external:
-                mv.external['name'] = self.format_volume_name(mv.external['name'], self)
+                mv.external['name'] = self.format_volume_name(
+                    mv.external['name'], self)
             volumes.append(mv)
         return volumes
 
@@ -209,7 +218,8 @@ class UCRSpawner(Spawner):
         try:
             app = self.marathon.get_app(app_id, embed_tasks=True)
         except NotFoundError:
-            self.log.info("The %s application has not been started yet", app_id)
+            self.log.info(
+                "The %s application has not been started yet", app_id)
             return None
         else:
             return app
@@ -225,7 +235,7 @@ class UCRSpawner(Spawner):
             uri.params,
             uri.query,
             uri.fragment
-            ))
+        ))
 
     def get_args(self):
         args = super().get_args()
@@ -261,7 +271,8 @@ class UCRSpawner(Spawner):
         template = """
         <div class="form-group">
             <label for="app_image">Image <span class="label label-default">Optional</span></label>
-            <input id="app_image" class="form-control" name="app_image" type="text" placeholder="e.g. %(default_app_image)s" value="%(app_image)s" />
+            <input id="app_image" class="form-control" name="app_image" type="text"
+             placeholder="e.g. %(default_app_image)s" value="%(app_image)s" />
         </div>
         <div class="checkbox">
             <label for="force_pull_image">
@@ -273,15 +284,18 @@ class UCRSpawner(Spawner):
             <div class="row">
                 <div class="col-sm-4">
                     <label for="cpu">CPU</label>
-                    <input id="cpu" class="form-control" name="cpu" type="number" step="any" value="%(cpu)s" min="%(min_cpu)s" max="%(max_cpu)s" required />
+                    <input id="cpu" class="form-control" name="cpu" type="number" step="any"
+                     value="%(cpu)s" min="%(min_cpu)s" max="%(max_cpu)s" required />
                 </div>
                 <div class="col-sm-4">
                     <label for="mem">Mem (MiB)</label>
-                    <input id="mem" class="form-control" name="mem" type="number" step="any" value="%(mem)s" min="%(min_mem)s" max="%(max_mem)s" required />
+                    <input id="mem" class="form-control" name="mem" type="number" step="any"
+                     value="%(mem)s" min="%(min_mem)s" max="%(max_mem)s" required />
                 </div>
                 <div class="col-sm-4">
                     <label for="disk">Disk (MiB)</label>
-                    <input id="disk" class="form-control" name="disk" type="number" step="any" value="%(disk)s" min="%(min_disk)s" max="%(max_disk)s" required />
+                    <input id="disk" class="form-control" name="disk" type="number" step="any"
+                     value="%(disk)s" min="%(min_disk)s" max="%(max_disk)s" required />
                 </div>
             </div>
         </div>
@@ -304,7 +318,8 @@ class UCRSpawner(Spawner):
                 <div class="row">
                     <div class="col-sm-4">
                         <label for="gpu">GPU</label>
-                        <input id="gpu" class="form-control" name="gpu" type="number" step="1" value="%(gpu)s" min="%(min_gpu)s" max="%(max_gpu)s" required />
+                        <input id="gpu" class="form-control" name="gpu" type="number" step="1"
+                         value="%(gpu)s" min="%(min_gpu)s" max="%(max_gpu)s" required />
                     </div>
                 </div>
             </div>
@@ -321,7 +336,8 @@ class UCRSpawner(Spawner):
         force_pull_image = self.user_options.get('force_pull_image', False)
         self.log.info("starting a Marathon app with image=%s" % app_image)
 
-        container_params = { 'image': app_image, 'force_pull_image': force_pull_image }
+        container_params = {'image': app_image,
+                            'force_pull_image': force_pull_image}
         docker_container = MarathonDockerContainer(**container_params)
 
         app_container = MarathonContainer(
@@ -333,7 +349,8 @@ class UCRSpawner(Spawner):
         mem = self.user_options.get('mem', None)
         disk = self.user_options.get('disk', None)
         gpu = self.user_options.get('gpu', None)
-        self.log.info("resource: (cpu=%s, mem=%s, disk=%s, gpu=%s)" % (cpu, mem, disk, gpu))
+        self.log.info("resource: (cpu=%s, mem=%s, disk=%s, gpu=%s)" %
+                      (cpu, mem, disk, gpu))
 
         cmd = self.cmd + self.get_args()
         env = self.get_env()
@@ -345,7 +362,8 @@ class UCRSpawner(Spawner):
 
         app_request = MarathonApp(
             id=self.app_id,
-            cmd=' '.join(cmd), # cmd does not use Docker image's default entrypoint
+            # cmd does not use Docker image's default entrypoint
+            cmd=' '.join(cmd),
             env=env,
             cpus=cpu,
             mem=mem,
@@ -359,7 +377,7 @@ class UCRSpawner(Spawner):
             health_checks=self.get_health_checks(),
             unreachable_strategy=self.unreachable_strategy,
             instances=1
-            )
+        )
 
         app_info = self.get_app_info(self.app_id)
         try:
@@ -368,15 +386,18 @@ class UCRSpawner(Spawner):
             else:
                 self.marathon.create_app(self.app_id, app_request)
         except Exception as e:
-            self.log.error("Failed to create application for %s: %s", self.app_id, e)
+            self.log.error(
+                "Failed to create application for %s: %s", self.app_id, e)
             raise e
 
         while True:
             app_info = yield self.get_app_info(self.app_id)
             if app_info is None:
-                raise UCRSpawnerException("Application %s is lost", self.app_id)
+                raise UCRSpawnerException(
+                    "Application %s is lost", self.app_id)
             elif app_info.instances == 0:
-                raise UCRSpawnerException("No instance for application %s", self.app_id)
+                raise UCRSpawnerException(
+                    "No instance for application %s", self.app_id)
             elif app_info.tasks_healthy == 1:
                 ip, port = self.get_ip_and_port(app_info)
                 break
@@ -386,7 +407,8 @@ class UCRSpawner(Spawner):
     @gen.coroutine
     def stop(self, now=False):
         try:
-            self.marathon.update_app(self.app_id, MarathonApp(instances=0), force=True)
+            self.marathon.update_app(
+                self.app_id, MarathonApp(instances=0), force=True)
         except Exception as e:
             self.log.error("Failed to delete application %s", self.app_id)
             raise e
@@ -413,18 +435,23 @@ class UCRSpawner(Spawner):
         for deployment in app_info.deployments:
             for current_action in deployment.current_actions:
                 if current_action.action == 'StopApplication':
-                    self.log.error("Application %s is shutting down", self.app_id)
+                    self.log.error(
+                        "Application %s is shutting down", self.app_id)
                     return 1
 
         if app_info.tasks_healthy == 0:
-            self.log.error("No healthy instance for application %s", self.app_id)
+            self.log.error(
+                "No healthy instance for application %s", self.app_id)
             return 2
 
         if self.autotimeout is not None:
             tm_diff = datetime.utcnow() - self.user.last_activity
-            self.log.debug("Application %s is inactive for %d sec", self.app_id, tm_diff.seconds)
+            self.log.debug("Application %s is inactive for %d sec",
+                           self.app_id, tm_diff.seconds)
             if tm_diff > timedelta(seconds=self.autotimeout):
-                self.log.info("Stopping application %s because it's inactive for more than %d sec", self.app_id, self.autotimeout)
+                self.log.info(
+                    "Stopping application %s because it's inactive for more than %d sec",
+                    self.app_id, self.autotimeout)
                 # Do not yield the result of stop here
                 self.stop()
                 return 0
