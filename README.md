@@ -47,6 +47,12 @@ You can use any Docker image of [Jupyter docker stack](https://github.com/jupyte
 python setup.py test
 ```
 
+Or use `tox` to test this package in multiple python versions.
+
+```sh
+tox
+```
+
 ### Test UCRSpawner on JupyterHub
 
 You can launch JupyterHub and the dependencies with UCRSpawner by docker-compose.
