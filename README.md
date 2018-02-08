@@ -123,6 +123,8 @@ You can launch JupyterHub and the dependencies with UCRSpawner by docker-compose
 docker-compose --project-name=ucrspawner up
 ```
 
+Wait for a while until all the services up, then, you will get access to JupyterHub at `http://localhost:8000`, Marathon at `http://localhost:8080` and Mesos Master at `http://localhost:5050`.
+
 ## Contributing
 
 1. Fork it
