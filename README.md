@@ -27,8 +27,16 @@ JupyterHub 0.7 or above is required, which also means Python 3.3 or above.
 
 Install ucrspawner to the system:
 
-```bash
+```sh
 pip install ucrspawner
+```
+
+## Installation from GitHub
+
+```sh
+git clone https://github.com/dtaniwaki/ucrspawner
+cd ucrspawner
+python setup.py install
 ```
 
 ## Configuration
