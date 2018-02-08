@@ -163,6 +163,7 @@ class UCRSpawner(Spawner):
         super(UCRSpawner, self).__init__(*args, **kwargs)
         self.marathon = MarathonClient(self.marathon_host)
         self.get_state()
+        self.env_keep = [] # env_keep doesn't make sense in Mesos
 
     @property
     def app_id(self):
