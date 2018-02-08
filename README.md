@@ -48,9 +48,60 @@ Tell JupyterHub to use `UCRSpawner` by adding the following line to your `jupyte
 c.JupyterHub.spawner_class = 'ucrspawner.UCRSpawner'
 ```
 
-### Docker Image
+Then, specify the endpoint of Marathon.
 
-You can use any Docker image of [Jupyter docker stack](https://github.com/jupyter/docker-stacks) with `UCRSpawner`.
+```python
+c.UCRSpawner.marathon_host = "MARATHON_ENDPOINT"
+```
+
+### App Image
+
+Users can use any Docker image of [Jupyter docker stack](https://github.com/jupyter/docker-stacks) with `UCRSpawner`.
+
+Set the default app image if you want to change.
+
+```python
+c.UCRSpawner.app_image = 'jupyterhub/singleuser'
+```
+
+Users can choose their own app image in the spawn option form as well.
+
+Specify a user in Mesos slaves whose `UID` is the same as a user in your Docker image.
+
+```python
+c.UCRSpawner.mesos_user = 'jovyan_in_mesos'
+```
+
+In the default user of docker stacks `jovyan`'s `UID` is `1000`, so you must have a user whose `UID` is `1000` in Mesos slaves as well. Otherwise, you need to change the `UID` of jovyan in Docker image instead.
+
+You can also change the app ID prefix of Marathon.
+
+```python
+c.UCRSpawner.app_prefix = 'jupyter'
+```
+
+### Resource Limits
+
+While UCRSpawner has minimum computing resource limits, you can configure default and maximum resource limits.
+
+```python
+c.UCRSpawner.cpu = 1
+c.UCRSpawner.max_cpu = 4
+c.UCRSpawner.mem = 256 // in MB
+c.UCRSpawner.max_mem = 1024 // in MB
+c.UCRSpawner.disk = 1000 // in MB
+c.UCRSpawner.max_disk = 5000 // in MB
+c.UCRSpawner.gpu = 0
+c.UCRSpawner.max_gpu = 2
+```
+
+### Auto timeout
+
+You can automatically stop running notebook servers which doesn't make any communication with the hub. Set the timeout period.
+
+```python
+c.UCRSpawner.autotimeout = 1800 // in seconds
+```
 
 ## Test
 
