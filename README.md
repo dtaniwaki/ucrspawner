@@ -87,10 +87,10 @@ While UCRSpawner has minimum computing resource limits, you can configure defaul
 ```python
 c.UCRSpawner.cpu = 1
 c.UCRSpawner.max_cpu = 4
-c.UCRSpawner.mem = 256 // in MB
-c.UCRSpawner.max_mem = 1024 // in MB
-c.UCRSpawner.disk = 1000 // in MB
-c.UCRSpawner.max_disk = 5000 // in MB
+c.UCRSpawner.mem = 256 # in MB
+c.UCRSpawner.max_mem = 1024 # in MB
+c.UCRSpawner.disk = 1000 # in MB
+c.UCRSpawner.max_disk = 5000 # in MB
 c.UCRSpawner.gpu = 0
 c.UCRSpawner.max_gpu = 2
 ```
@@ -100,7 +100,7 @@ c.UCRSpawner.max_gpu = 2
 You can automatically stop running notebook servers which doesn't make any communication with the hub. Set the timeout period.
 
 ```python
-c.UCRSpawner.autotimeout = 1800 // in seconds
+c.UCRSpawner.autotimeout = 1800 # in seconds
 ```
 
 ## Test
