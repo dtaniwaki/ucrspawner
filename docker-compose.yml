@@ -33,7 +33,7 @@ services:
       - mesos-master
   marathon:
     image: dtaniwaki/marathon:1.5.1
-    command: --master zk://zk:2181/mesos --zk zk://zk:2181/marathon --logging_level=WARN
+    command: --master zk://zk:2181/mesos --zk zk://zk:2181/marathon --logging_level=WARN --task_launch_confirm_timeout=600000
     networks:
       - ucrspawner
     ports:
