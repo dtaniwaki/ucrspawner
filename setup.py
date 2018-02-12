@@ -11,7 +11,6 @@ tests_require = [
     'pytest>=3.0,<3.3',
     'pytest-cov>=2.5,<3dev',
     'pytest-html>=1.15.2,<2dev',
-    'codecov>=1.4.0,<2dev',
 ]
 
 version_ns = {}
