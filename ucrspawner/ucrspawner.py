@@ -3,7 +3,7 @@ import warnings
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta
 from textwrap import dedent
-from urllib.parse import urlparse, urlunparse
+from urllib.parse import urljoin, urlparse, urlunparse
 
 import jupyterhub
 from jupyterhub.spawner import Spawner
@@ -18,19 +18,19 @@ from marathon.models.container import (
     MarathonDockerContainer,
 )
 
+import requests
+
 from tornado import gen
 from tornado.concurrent import run_on_executor
 
 from traitlets import Any, Float, Integer, List, Unicode, default, observe
 
-from .volumenaming import default_format_volume_name
 from .exceptions import UCRSpawnerException
+from .mesosslave import MesosSlave
+from .utils import remove_zeros
+from .volumenaming import default_format_volume_name
 
 _jupyterhub_xy = '%i.%i' % (jupyterhub.version_info[:2])
-
-
-def remove_zeros(number_str):
-    return str(number_str).rstrip('0').rstrip('.') if '.' in number_str else number_str
 
 
 class UCRSpawner(Spawner):
@@ -160,7 +160,7 @@ class UCRSpawner(Spawner):
         super(UCRSpawner, self).__init__(*args, **kwargs)
         self.marathon = MarathonClient(self.marathon_host)
         self.get_state()
-        self.env_keep = [] # env_keep doesn't make sense in Mesos
+        self.env_keep = []  # env_keep doesn't make sense in Mesos
 
     @property
     def app_id(self):
@@ -204,7 +204,9 @@ class UCRSpawner(Spawner):
         constraints = [MarathonConstraint.from_json(c) for c in self.marathon_constraints]
         unsupported = [c for c in constraints if c.operator not in ('LIKE', 'UNLIKE', 'IS')]
         if len(unsupported) > 0:
-            raise UCRSpawnerException('Unsupported constraint operators: %s' % sorted(list(set([c.operator for c in unsupported]))))
+            raise UCRSpawnerException(
+                'Unsupported constraint operators: %s'
+                % sorted(list(set([c.operator for c in unsupported]))))
         return constraints
 
     def get_ip_and_port(self, app_info):
@@ -456,3 +458,16 @@ class UCRSpawner(Spawner):
                 return 0
 
         return None
+
+    def get_mesos_slaves(self):
+        info = self.marathon.get_info()
+
+        headers = {
+            'Accept': 'application/json'
+        }
+        response = requests.get(urljoin(info.marathon_config.mesos_leader_ui_url, '/slaves'), headers=headers)
+        json = response.json()
+        slaves = [MesosSlave(j) for j in json['slaves']]
+        for c in self.get_constraints():
+            slaves = [s for s in slaves if s.match(c)]
+        return slaves
