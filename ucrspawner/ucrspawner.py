@@ -27,13 +27,10 @@ from traitlets import Any, Float, Integer, List, Unicode, default, observe
 
 from .exceptions import UCRSpawnerException
 from .mesosslave import MesosSlave
+from .utils import remove_zeros
 from .volumenaming import default_format_volume_name
 
 _jupyterhub_xy = '%i.%i' % (jupyterhub.version_info[:2])
-
-
-def remove_zeros(number_str):
-    return str(number_str).rstrip('0').rstrip('.') if '.' in number_str else number_str
 
 
 class UCRSpawner(Spawner):
