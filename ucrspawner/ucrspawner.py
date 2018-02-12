@@ -202,7 +202,7 @@ class UCRSpawner(Spawner):
 
     def get_constraints(self):
         constraints = [MarathonConstraint.from_json(c) for c in self.marathon_constraints]
-        unsupported = [c for c in constraints if c.operator not in ('LIKE', 'UNLIKE')]
+        unsupported = [c for c in constraints if c.operator not in ('LIKE', 'UNLIKE', 'IS')]
         if len(unsupported) > 0:
             raise UCRSpawnerException('Unsupported constraint operators: %s' % sorted(list(set([c.operator for c in unsupported]))))
         return constraints
