@@ -204,7 +204,7 @@ class UCRSpawner(Spawner):
         constraints = [MarathonConstraint.from_json(c) for c in self.marathon_constraints]
         unsupported = [c for c in constraints if c.operator not in ('LIKE', 'UNLIKE')]
         if len(unsupported) > 0:
-            raise UCRSpawnerException('Unsupported constraint operators: %s' % str(set([c.operator for c in unsupported])))
+            raise UCRSpawnerException('Unsupported constraint operators: %s' % sorted(list(set([c.operator for c in unsupported]))))
         return constraints
 
     def get_ip_and_port(self, app_info):
