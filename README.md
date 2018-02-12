@@ -103,6 +103,14 @@ You can automatically stop running notebook servers which doesn't make any commu
 c.UCRSpawner.autotimeout = 1800 # in seconds
 ```
 
+### Mesos Slaves
+
+You can get available resources of meso slaves in your handlers, which inherit `BaseHandler` through this spawner.
+
+```python
+self.get_current_user().spawner.get_mesos_slaves()
+```
+
 ## Test
 
 ```sh
