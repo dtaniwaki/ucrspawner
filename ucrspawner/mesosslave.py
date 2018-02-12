@@ -1,6 +1,7 @@
 import re
 
 from .exceptions import UCRSpawnerException
+from .utils import remove_zeros
 
 
 class MesosSlave():
@@ -25,16 +26,29 @@ class MesosSlave():
             self.used_disk < self.disk and \
             (self.gpus == 0 or self.used_gpus < self.gpus)
 
+    # Match Mesos slaves with Marathon constraints
+    #   https://github.com/mesosphere/marathon/blob/v1.5.1/src/main/scala/mesosphere/mesos/Constraints.scala#L34
     def match(self, constraint):
-        if constraint.operator not in ('LIKE', 'UNLIKE'):
+        if constraint.operator not in ('LIKE', 'UNLIKE', 'IS'):
             raise UCRSpawnerException('Unsupported constraint operator: %s' % constraint.operator)
+        if not isinstance(constraint.value, str):
+            raise UCRSpawnerException('Unsupported constraint value type: %s' % type(constraint.value))
 
         if constraint.field == 'hostname':
             value = self.hostname
         else:
-            value = str(self.attributes.get(constraint.field, ''))
+            value = self.attributes.get(constraint.field, '')
 
-        m = re.compile(constraint.value).match(value)
+        if isinstance(value, (int, float)):
+            value = remove_zeros(value)
+        elif isinstance(value, str):
+            # Ignore range and set attributes
+            if re.match('^(\\[.*\\]|\\{.*\\})$', value):
+                return False
+        else:
+            raise UCRSpawnerException('Unsupported value type: %s' % type(value))
+
+        m = re.match('^%s$' % constraint.value, value)
         if constraint.operator == 'LIKE':
             return m is not None
         else:
