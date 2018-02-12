@@ -24,16 +24,13 @@ from tornado.concurrent import run_on_executor
 from traitlets import Any, Float, Integer, List, Unicode, default, observe
 
 from .volumenaming import default_format_volume_name
+from .exceptions import UCRSpawnerException
 
 _jupyterhub_xy = '%i.%i' % (jupyterhub.version_info[:2])
 
 
 def remove_zeros(number_str):
     return str(number_str).rstrip('0').rstrip('.') if '.' in number_str else number_str
-
-
-class UCRSpawnerException(Exception):
-    pass
 
 
 class UCRSpawner(Spawner):

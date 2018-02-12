@@ -1,0 +1,2 @@
+class UCRSpawnerException(Exception):
+    pass
