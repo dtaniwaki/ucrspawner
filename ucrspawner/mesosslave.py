@@ -26,13 +26,16 @@ class MesosSlave():
             (self.gpus == 0 or self.available_gpus > 0)
 
     def match(self, constraint):
+        if constraint.operator not in ('LIKE', 'UNLIKE'):
+            raise UCRSpawnerException('Unsupported constraint operator: %s' % constraint.operator)
+
         if constraint.field == 'hostname':
             value = self.hostname
         else:
             value = str(self.attributes.get(constraint.field, ''))
+
+        m = re.compile(constraint.value).match(value)
         if constraint.operator == 'LIKE':
-            return re.compile(constraint.value).match(value) is not None
-        elif constraint.operator == 'UNLIKE':
-            return re.compile(constraint.value).match(value) is None
+            return m is not None
         else:
-            raise UCRSpawnerException('Unsupported constraint operator: %s' % constraint.operator)
+            return m is None
