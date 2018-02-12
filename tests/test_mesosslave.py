@@ -17,6 +17,8 @@ def test_match(monkeypatch):
     assert not slave.match(MarathonConstraint('foo', 'UNLIKE', '123'))
     assert slave.match(MarathonConstraint('bar', 'LIKE', 'wo[w]'))
     assert not slave.match(MarathonConstraint('bar', 'LIKE', 'wof'))
+    assert not slave.match(MarathonConstraint('unknown', 'LIKE', 'hoge'))
+    assert slave.match(MarathonConstraint('unknown', 'UNLIKE', 'hoge'))
     with pytest.raises(UCRSpawnerException) as excinfo:
         slave.match(MarathonConstraint('foo', 'UNKNOWN', ''))
     assert str(excinfo.value) == 'Unsupported constraint operator: UNKNOWN'

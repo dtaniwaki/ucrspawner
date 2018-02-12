@@ -29,7 +29,7 @@ class MesosSlave():
         if constraint.field == 'hostname':
             value = self.hostname
         else:
-            value = str(self.attributes[constraint.field])
+            value = str(self.attributes.get(constraint.field, ''))
         if constraint.operator == 'LIKE':
             return re.compile(constraint.value).match(value) is not None
         elif constraint.operator == 'UNLIKE':
