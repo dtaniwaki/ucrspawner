@@ -468,12 +468,12 @@ class UCRSpawner(Spawner):
             mesos_master_host = self.mesos_master_host
         else:
             info = self.marathon.get_info()
-            mesos_master_host = urljoin(info.marathon_config.mesos_leader_ui_url, '/slaves')
+            mesos_master_host = info.marathon_config.mesos_leader_ui_url
 
         headers = {
             'Accept': 'application/json'
         }
-        response = requests.get(mesos_master_host, headers=headers)
+        response = requests.get(urljoin(mesos_master_host, '/slaves'), headers=headers)
         json = response.json()
         slaves = [MesosSlave(j) for j in json['slaves']]
         for c in self.get_constraints():
