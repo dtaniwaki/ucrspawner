@@ -20,11 +20,23 @@ class MesosSlave():
         self.used_disk = params['used_resources']['disk']
         self.used_gpus = int(params['used_resources']['gpus'])
 
+    def is_empty(self):
+        return self.used_cpus == 0 and \
+            self.used_mem == 0 and \
+            self.used_disk == 0 and \
+            self.used_gpus == 0
+
     def is_available(self):
         return self.used_cpus < self.cpus and \
             self.used_mem < self.mem and \
             self.used_disk < self.disk and \
             (self.gpus == 0 or self.used_gpus < self.gpus)
+
+    def is_occupied(self):
+        return self.used_cpus >= self.cpus or \
+            self.used_mem >= self.mem or \
+            self.used_disk >= self.disk or \
+            (self.gpus != 0 and self.used_gpus >= self.gpus)
 
     # Match Mesos slaves with Marathon constraints
     #   https://github.com/mesosphere/marathon/blob/v1.5.1/src/main/scala/mesosphere/mesos/Constraints.scala#L34
