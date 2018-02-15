@@ -58,7 +58,7 @@ class UCRSpawner(Spawner):
 
     mesos_master_host = Unicode(
         u'',
-        help="Hostname of Mesos Master server").tag(config=True)
+        help="Hostname of Mesos Master server").tag(config=True, allow_none=True)
 
     unreachable_strategy = Any(
         None,
