@@ -51,7 +51,7 @@ c.JupyterHub.spawner_class = 'ucrspawner.UCRSpawner'
 Then, specify the endpoint of Marathon.
 
 ```python
-c.UCRSpawner.marathon_host = "MARATHON_ENDPOINT"
+c.UCRSpawner.marathon_host = "MARATHON_HOST"
 ```
 
 ### App Image
@@ -109,6 +109,12 @@ You can get available resources of meso slaves in your handlers, which inherit `
 
 ```python
 self.get_current_user().spawner.get_mesos_slaves()
+```
+
+Specify Mesos master host in `jupyterhub_config.py` if the endpoint is different from the one which Marathon reports.
+
+```python
+c.UCRSpawner.mesos_master_host = 'MESOS_MASTER_HOST'
 ```
 
 ## Test

@@ -56,6 +56,10 @@ class UCRSpawner(Spawner):
         [],
         help='Constraints to be passed through to Marathon').tag(config=True)
 
+    mesos_master_host = Unicode(
+        u'',
+        help="Hostname of Mesos Master server").tag(config=True)
+
     unreachable_strategy = Any(
         None,
         help='Unreachable strategy to be passed through to Marathon').tag(config=True)
@@ -460,12 +464,16 @@ class UCRSpawner(Spawner):
         return None
 
     def get_mesos_slaves(self):
-        info = self.marathon.get_info()
+        if self.mesos_master_host:
+            mesos_master_host = self.mesos_master_host
+        else:
+            info = self.marathon.get_info()
+            mesos_master_host = urljoin(info.marathon_config.mesos_leader_ui_url, '/slaves')
 
         headers = {
             'Accept': 'application/json'
         }
-        response = requests.get(urljoin(info.marathon_config.mesos_leader_ui_url, '/slaves'), headers=headers)
+        response = requests.get(mesos_master_host, headers=headers)
         json = response.json()
         slaves = [MesosSlave(j) for j in json['slaves']]
         for c in self.get_constraints():
