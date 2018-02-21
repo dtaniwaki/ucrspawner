@@ -57,8 +57,13 @@ class UCRSpawner(Spawner):
         help='Constraints to be passed through to Marathon').tag(config=True)
 
     mesos_master_host = Unicode(
-        u'',
-        help="Hostname of Mesos Master server").tag(config=True, allow_none=True)
+        None,
+        help=dedent(
+            """
+            Hostname of Mesos Master server.
+            Leave it empty if you want to use Mesos leader UI URL of Marathon config.
+            """
+        ), allow_none=True).tag(config=True)
 
     unreachable_strategy = Any(
         None,
