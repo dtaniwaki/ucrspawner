@@ -95,14 +95,6 @@ c.UCRSpawner.gpu = 0
 c.UCRSpawner.max_gpu = 2
 ```
 
-### Auto timeout
-
-You can automatically stop running notebook servers which doesn't make any communication with the hub. Set the timeout period.
-
-```python
-c.UCRSpawner.autotimeout = 1800 # in seconds
-```
-
 ### Mesos Slaves
 
 You can get available resources of meso slaves in your handlers, which inherit `BaseHandler` through this spawner.

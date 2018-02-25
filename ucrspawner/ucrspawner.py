@@ -103,11 +103,6 @@ class UCRSpawner(Spawner):
 
     mesos_user = Unicode(None, config=True, allow_none=True)
 
-    autotimeout = Integer(None,
-                          help="Seconds to automatically timeout unused notebook servers",
-                          config=True,
-                          allow_none=True)
-
     hub_ip_connect = Unicode(
         "",
         help="Public IP address of the hub"
@@ -453,18 +448,6 @@ class UCRSpawner(Spawner):
             self.log.error(
                 "No healthy instance for application %s", self.app_id)
             return 2
-
-        if self.autotimeout is not None:
-            tm_diff = datetime.utcnow() - self.user.last_activity
-            self.log.debug("Application %s is inactive for %d sec",
-                           self.app_id, tm_diff.seconds)
-            if tm_diff > timedelta(seconds=self.autotimeout):
-                self.log.info(
-                    "Stopping application %s because it's inactive for more than %d sec",
-                    self.app_id, self.autotimeout)
-                # Do not yield the result of stop here
-                self.stop()
-                return 0
 
         return None
 
