@@ -1,9 +1,8 @@
-from functools import lru_cache
 import os
 import socket
 import warnings
 from concurrent.futures import ThreadPoolExecutor
-from datetime import datetime, timedelta
+from functools import lru_cache
 from textwrap import dedent
 from urllib.parse import urljoin, urlparse, urlunparse
 
