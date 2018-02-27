@@ -1,0 +1,46 @@
+<div>
+  <div class="form-group">
+    <label for="app_image">Image <span class="label label-default">Optional</span></label>
+    <input id="app_image" class="form-control" name="app_image" type="text"
+     placeholder="e.g. {{ default_app_image }}" value="{{ app_image }}" />
+  </div>
+  <div class="checkbox">
+    <label for="force_pull_image">
+      <input id="force_pull_image" name="force_pull_image" type="checkbox" value="on" />
+      Force pull image
+    </label>
+  </div>
+  <div class="form-group">
+    <div class="row">
+      <div class="col-sm-4">
+        <label for="cpu">CPU</label>
+        <input id="cpu" class="form-control" name="cpu" type="number" step="any"
+         value="{{ cpu }}" min="{{ min_cpu }}" max="{{ max_cpu }}" required />
+      </div>
+      <div class="col-sm-4">
+        <label for="mem">Mem (MiB)</label>
+        <input id="mem" class="form-control" name="mem" type="number" step="any"
+         value="{{ mem }}" min="{{ min_mem }}" max="{{ max_mem }}" required />
+      </div>
+      <div class="col-sm-4">
+        <label for="disk">Disk (MiB)</label>
+        <input id="disk" class="form-control" name="disk" type="number" step="any"
+         value="{{ disk }}" min="{{ min_disk }}" max="{{ max_disk }}" required />
+      </div>
+    </div>
+  </div>
+  <div class="form-group">
+    <div class="row">
+      <div class="col-sm-4">
+        <label for="gpu">GPU</label>
+        <input id="gpu" class="form-control" name="gpu" type="number" step="1"
+         value="{{ gpu }}" min="{{ min_gpu }}" max="{{ max_gpu }}" required />
+      </div>
+      <div class="col-sm-4">
+        <label for="user_port">Port</label><small> as <kbd>$PORT_0</kbd>, <kbd>$PORT_1</kbd>...</small>
+        <input id="user_port" class="form-control" name="user_port" type="number" step="1"
+         value="{{ user_port }}" min="{{ min_user_port }}" max="{{ max_user_port }}" required />
+      </div>
+    </div>
+  </div>
+</div>

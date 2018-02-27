@@ -1,9 +1,13 @@
+from functools import lru_cache
+import os
 import socket
 import warnings
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta
 from textwrap import dedent
 from urllib.parse import urljoin, urlparse, urlunparse
+
+import jinja2
 
 import jupyterhub
 from jupyterhub.spawner import Spawner
@@ -276,71 +280,38 @@ class UCRSpawner(Spawner):
 
     @property
     def options_form(self):
-        template = """
-        <div class="form-group">
-            <label for="app_image">Image <span class="label label-default">Optional</span></label>
-            <input id="app_image" class="form-control" name="app_image" type="text"
-             placeholder="e.g. %(default_app_image)s" value="%(app_image)s" />
-        </div>
-        <div class="checkbox">
-            <label for="force_pull_image">
-                <input id="force_pull_image" name="force_pull_image" type="checkbox" value="on" />
-                Force pull image
-            </label>
-        </div>
-        <div class="form-group">
-            <div class="row">
-                <div class="col-sm-4">
-                    <label for="cpu">CPU</label>
-                    <input id="cpu" class="form-control" name="cpu" type="number" step="any"
-                     value="%(cpu)s" min="%(min_cpu)s" max="%(max_cpu)s" required />
-                </div>
-                <div class="col-sm-4">
-                    <label for="mem">Mem (MiB)</label>
-                    <input id="mem" class="form-control" name="mem" type="number" step="any"
-                     value="%(mem)s" min="%(min_mem)s" max="%(max_mem)s" required />
-                </div>
-                <div class="col-sm-4">
-                    <label for="disk">Disk (MiB)</label>
-                    <input id="disk" class="form-control" name="disk" type="number" step="any"
-                     value="%(disk)s" min="%(min_disk)s" max="%(max_disk)s" required />
-                </div>
-            </div>
-        </div>
-        <div class="form-group">
-            <div class="row">
-                <div class="col-sm-4">
-                    <label for="gpu">GPU</label>
-                    <input id="gpu" class="form-control" name="gpu" type="number" step="1"
-                     value="%(gpu)s" min="%(min_gpu)s" max="%(max_gpu)s" required />
-                </div>
-                <div class="col-sm-4">
-                    <label for="user_port">Port</label><small> as <kbd>$PORT_0</kbd>, <kbd>$PORT_1</kbd>...</small>
-                    <input id="user_port" class="form-control" name="user_port" type="number" step="1"
-                     value="%(user_port)s" min="%(min_user_port)s" max="%(max_user_port)s" required />
-                </div>
-            </div>
-        </div>
-        """ % {
-            'default_app_image': self.app_image,
-            'app_image': self.stored_user_options.get('app_image', None) or '',
-            'min_cpu': 0.1,
-            'max_cpu': self.max_cpu,
-            'cpu': remove_zeros(str(self.stored_user_options.get('cpu', self.cpu))),
-            'min_mem': 32.0,
-            'max_mem': self.max_mem,
-            'mem': remove_zeros(str(self.stored_user_options.get('mem', self.mem))),
-            'min_disk': 1000.0,
-            'max_disk': self.max_disk,
-            'disk': remove_zeros(str(self.stored_user_options.get('disk', self.disk))),
-            'min_gpu': 0,
-            'max_gpu': self.max_gpu,
-            'gpu': self.stored_user_options.get('gpu', self.gpu),
-            'min_user_port': 0,
-            'max_user_port': self.max_user_port,
-            'user_port': self.stored_user_options.get('user_port', self.user_port),
-        }
-        return """<div>%s</div>""" % template
+        return self.options_form_template().render(
+            default_app_image=self.app_image,
+            app_image=self.stored_user_options.get('app_image', None) or '',
+            min_cpu=0.1,
+            max_cpu=self.max_cpu,
+            cpu=remove_zeros(str(self.stored_user_options.get('cpu', self.cpu))),
+            min_mem=32.0,
+            max_mem=self.max_mem,
+            mem=remove_zeros(str(self.stored_user_options.get('mem', self.mem))),
+            min_disk=1000.0,
+            max_disk=self.max_disk,
+            disk=remove_zeros(str(self.stored_user_options.get('disk', self.disk))),
+            min_gpu=0,
+            max_gpu=self.max_gpu,
+            gpu=self.stored_user_options.get('gpu', self.gpu),
+            min_user_port=0,
+            max_user_port=self.max_user_port,
+            user_port=self.stored_user_options.get('user_port', self.user_port),
+        )
+
+    @lru_cache()
+    def options_form_template(self):
+        template_filename = 'options_form.html'
+        try:
+            template = self.user.settings['jinja2_env'].get_template(template_filename)
+            self.log.info('Use the template from JupyterHub settings')
+            return template
+        except jinja2.exceptions.TemplateNotFound:
+            self.log.debug('Fallback to the default template')
+            return jinja2.Environment(
+                loader=jinja2.FileSystemLoader(os.path.join(os.path.dirname(__file__), 'templates'))
+            ).get_template(template_filename)
 
     @gen.coroutine
     def start(self):
