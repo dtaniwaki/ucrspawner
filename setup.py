@@ -27,8 +27,11 @@ setup(
     license='MIT',
     keywords='JupyterHub Marathon UCR Mesos',
     packages=[
-        "ucrspawner",
+        'ucrspawner',
     ],
+    package_data={
+        'ucrspawner': ['templates/*'],
+    },
     python_requires='>=3.3',
     install_requires=requires,
     setup_requires=[
