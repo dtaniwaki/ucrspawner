@@ -267,8 +267,7 @@ class UCRSpawner(Spawner):
         options['cpu'] = float(formdata['cpu'][0])
         options['mem'] = float(formdata['mem'][0])
         options['disk'] = float(formdata['disk'][0])
-        if formdata.get('gpu', None):
-            options['gpu'] = int(formdata['gpu'][0])
+        options['gpu'] = int(formdata['gpu'][0])
         return options
 
     @property
@@ -304,6 +303,15 @@ class UCRSpawner(Spawner):
                 </div>
             </div>
         </div>
+        <div class="form-group">
+            <div class="row">
+                <div class="col-sm-4">
+                    <label for="gpu">GPU</label>
+                    <input id="gpu" class="form-control" name="gpu" type="number" step="1"
+                     value="%(gpu)s" min="%(min_gpu)s" max="%(max_gpu)s" required />
+                </div>
+            </div>
+        </div>
         """ % {
             'default_app_image': self.app_image,
             'app_image': self.stored_user_options.get('app_image', None) or '',
@@ -316,23 +324,10 @@ class UCRSpawner(Spawner):
             'min_disk': 1000.0,
             'max_disk': self.max_disk,
             'disk': remove_zeros(str(self.stored_user_options.get('disk', self.disk))),
+            'min_gpu': 0,
+            'max_gpu': self.max_gpu,
+            'gpu': self.stored_user_options.get('gpu', self.gpu),
         }
-        if self.max_gpu > 0:
-            template += """
-            <div class="form-group">
-                <div class="row">
-                    <div class="col-sm-4">
-                        <label for="gpu">GPU</label>
-                        <input id="gpu" class="form-control" name="gpu" type="number" step="1"
-                         value="%(gpu)s" min="%(min_gpu)s" max="%(max_gpu)s" required />
-                    </div>
-                </div>
-            </div>
-            """ % {
-                'min_gpu': 0,
-                'max_gpu': self.max_gpu,
-                'gpu': self.stored_user_options.get('gpu', self.gpu),
-            }
         return """<div>%s</div>""" % template
 
     @gen.coroutine
