@@ -1,5 +1,11 @@
 import os
 
+try:
+    from dotenv import load_dotenv, find_dotenv
+    load_dotenv(find_dotenv())
+except ImportError:
+    pass
+
 c.JupyterHub.hub_ip = '0.0.0.0'
 c.JupyterHub.hub_port = int(os.environ.get('JUPYTERHUB_API_PORT', 8080))
 c.JupyterHub.hub_connect_ip = os.environ['JUPYTERHUB_API_IP']
