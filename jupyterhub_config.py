@@ -21,5 +21,7 @@ c.UCRSpawner.disk = 1000
 c.UCRSpawner.max_disk = 5000
 c.UCRSpawner.gpu = 0
 c.UCRSpawner.max_gpu = 0
+c.UCRSpawner.user_port = 0
+c.UCRSpawner.max_user_port = 2
 c.UCRSpawner.mesos_user = os.environ['MESOS_USER']
 c.UCRSpawner.debug = True

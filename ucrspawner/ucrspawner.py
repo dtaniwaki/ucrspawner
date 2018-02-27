@@ -101,6 +101,9 @@ class UCRSpawner(Spawner):
     max_gpu = Integer(0, config=True)
     gpu = Integer(0, config=True)
 
+    max_user_port = Integer(2, config=True)
+    user_port = Integer(0, config=True)
+
     mesos_user = Unicode(None, config=True, allow_none=True)
 
     hub_ip_connect = Unicode(
@@ -256,7 +259,7 @@ class UCRSpawner(Spawner):
             if arg.startswith('--port='):
                 args.pop(idx)
                 break
-        args.append('--port=$PORT0')
+        args.append('--port=$PORT_NOTEBOOK')
         return args
 
     def options_from_form(self, formdata):
@@ -268,6 +271,7 @@ class UCRSpawner(Spawner):
         options['mem'] = float(formdata['mem'][0])
         options['disk'] = float(formdata['disk'][0])
         options['gpu'] = int(formdata['gpu'][0])
+        options['user_port'] = int(formdata['user_port'][0])
         return options
 
     @property
@@ -310,6 +314,11 @@ class UCRSpawner(Spawner):
                     <input id="gpu" class="form-control" name="gpu" type="number" step="1"
                      value="%(gpu)s" min="%(min_gpu)s" max="%(max_gpu)s" required />
                 </div>
+                <div class="col-sm-4">
+                    <label for="user_port">Port</label><small> as <kbd>$PORT_0</kbd>, <kbd>$PORT_1</kbd>...</small>
+                    <input id="user_port" class="form-control" name="user_port" type="number" step="1"
+                     value="%(user_port)s" min="%(min_user_port)s" max="%(max_user_port)s" required />
+                </div>
             </div>
         </div>
         """ % {
@@ -327,6 +336,9 @@ class UCRSpawner(Spawner):
             'min_gpu': 0,
             'max_gpu': self.max_gpu,
             'gpu': self.stored_user_options.get('gpu', self.gpu),
+            'min_user_port': 0,
+            'max_user_port': self.max_user_port,
+            'user_port': self.stored_user_options.get('user_port', self.user_port),
         }
         return """<div>%s</div>""" % template
 
@@ -349,6 +361,7 @@ class UCRSpawner(Spawner):
         mem = self.user_options.get('mem', None)
         disk = self.user_options.get('disk', None)
         gpu = self.user_options.get('gpu', None)
+        user_port = self.user_options.get('user_port', None)
         self.log.info("resource: (cpu=%s, mem=%s, disk=%s, gpu=%s)" %
                       (cpu, mem, disk, gpu))
 
@@ -357,8 +370,11 @@ class UCRSpawner(Spawner):
 
         port_definitions = [PortDefinition(
             port=0,
-            protocol='tcp'
+            protocol='tcp',
+            name='notebook',
         )]
+
+        port_definitions += [PortDefinition(port=0, protocol='tcp', name=str(i)) for i in range(user_port)]
 
         app_request = MarathonApp(
             id=self.app_id,
