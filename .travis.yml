@@ -8,6 +8,7 @@ python:
 install:
   - pip install -U pip wheel
   - pip install tox-travis "tox>=2.7,<3dev" codecov
+  - pip install setuptools-scm # Workaround for issue on python 3.3: https://github.com/pypa/setuptools_scm/issues/209
 script: tox
 after_success:
   - codecov
