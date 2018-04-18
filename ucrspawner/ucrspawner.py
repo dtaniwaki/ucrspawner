@@ -362,6 +362,9 @@ class UCRSpawner(Spawner):
             constraints=self.get_constraints(),
             health_checks=self.get_health_checks(),
             unreachable_strategy=self.unreachable_strategy,
+            backoff_seconds=5,
+            backoff_factor=2,
+            max_launch_delay_seconds=3600,
             instances=1
         )
 
