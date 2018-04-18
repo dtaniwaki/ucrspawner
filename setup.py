@@ -35,7 +35,7 @@ setup(
     python_requires='>=3.3',
     install_requires=requires,
     setup_requires=[
-        'pytest-runner>=2.0,<3dev',
+        'pytest-runner>=4.0,<5dev',
         'tox>=2.7,<3dev',
         'bumpversion>=0.5.3,<1dev',
     ],
